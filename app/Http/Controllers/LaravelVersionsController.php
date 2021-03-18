@@ -10,24 +10,25 @@ class LaravelVersionsController extends Controller
 {
     public function index()
     {
-        $versions = Cache::remember('laravel-versions', 3600, function () {
+        $versions = Cache::remember('laravel-versions', 3600, function () {   
             return LaravelVersion::orderBy('major', 'desc')->orderBy('minor', 'desc')->get();
         });
 
         $activeVersions = $versions->filter(function ($version) {
-            return $version->released_at->gt(now())
-                || ($version->ends_securityfixes_at && $version->ends_securityfixes_at->gt(now()));
+            return $version->released_at->gte(now())
+                || ($version->ends_securityfixes_at && $version->ends_securityfixes_at->gte(now()));
         });
-
         $inActiveVersions = $versions->filter(function ($version) {
             return $version->released_at->lt(now()) &&
                 (! $version->ends_securityfixes_at || $version->ends_securityfixes_at->lt(now()));
         });
-
         return view('versions.index', [
             'activeVersions' => $activeVersions,
-            'inactiveVersions' => $inActiveVersions,
-        ]);
+            'inactiveVersions' => $inActiveVersions  ]);
+
+
+
+        
     }
 
     public function show($path)
