@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Cache;
 
 class LaravelVersionsController extends Controller
 {
-    public function index()
-    {
-        $versions = Cache::remember('laravel-versions', 3600, function () {   
+    public function index()    {
+        $versions = Cache::remember('laravel-versions',3600,function(){   
             return LaravelVersion::orderBy('major', 'desc')->orderBy('minor', 'desc')->get();
         });
 
